@@ -20,10 +20,9 @@ setup(
         'tqdm>=4.44.1',
         'numpy>=1.21',
         'pandas>=1.0.3',
-        'sklearn>=0.0',
-        'scikit-learn~=0.22.2.post1',
+        'scikit-learn~=1.6.1',
         'setuptools>=49.2.1',
-        'requests~>2.31.0',
+        'requests~>2.32.3',
         'stanza~=1.3.0'
     ],
     package_data={'beast': package_files('beast', 'data\\default')},
