@@ -22,7 +22,7 @@ setup(
         'pandas>=1.0.3',
         'scikit-learn~=1.6.1',
         'setuptools>=49.2.1',
-        'requests~>2.32.3',
+        'requests~>2.33.0',
         'stanza~=1.3.0'
     ],
     package_data={'beast': package_files('beast', 'data\\default')},
