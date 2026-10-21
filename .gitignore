@@ -140,3 +140,15 @@ data/default/newBEaST/matrix-prob.csv
 *.col
 *.pt
 *.par
+
+# Local compatibility/evaluation runtime
+artifacts/
+.uv-cache/
+runs/
+
+# Private local evaluation work; never publish with compatibility patch
+/LOCAL_EVALUATION.md
+/evaluation/
+/scripts/evaluate_beast.py
+/local-evaluation/
+/smoke-result.json

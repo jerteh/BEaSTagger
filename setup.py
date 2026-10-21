@@ -15,16 +15,17 @@ setup(
     version='1.2',
     packages=['beast'],
     install_requires=[
-        'torch>=1.8.1',
-        'spacy~=3.0.6',
+        'torch>=2.6,<3',
+        'spacy>=3.7.5,<3.8',
         'tqdm>=4.44.1',
-        'numpy>=1.21',
-        'pandas>=1.0.3',
+        'numpy>=1.26.4,<2',
+        'pandas>=2.2.3,<3',
         'scikit-learn~=1.6.1',
         'setuptools>=49.2.1',
-        'requests~>2.33.0',
-        'stanza>=1.12.2'
+        'requests>=2.32.5,<3',
+        'click>=8.1,<9'
     ],
+    extras_require={'stanza': ['stanza>=1.12.2']},
     package_data={'beast': package_files('beast', 'data\\default')},
     include_package_data=True,
     url='https://github.com/procesaur/BEaSTagger',

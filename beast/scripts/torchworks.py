@@ -60,7 +60,7 @@ def test_prob_net(csv, par_path, out_path, modelname='net-prob.pt'):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     model = MulticlassClassification(num_feature=len(colnames), num_class=len(class2idx))
-    model.load_state_dict(torch.load(par_path + '/' + modelname, map_location=torch.device(device)))
+    model.load_state_dict(torch.load(par_path + '/' + modelname, map_location=torch.device(device), weights_only=True))
     model.to(device)
 
     test_dataset = ClassifierDatasetx(torch.from_numpy(input).float(), torch.from_numpy(output).long())

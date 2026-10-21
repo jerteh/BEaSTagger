@@ -1,0 +1,12 @@
+# Install the CPU torch wheel first with scripts/install-windows-eval.ps1.
+numpy==1.26.4
+spacy==3.7.5
+tqdm==4.67.1
+pandas==2.2.3
+torch==2.6.0+cpu
+scikit-learn==1.6.1
+setuptools==75.8.2
+requests==2.32.5
+wheel==0.45.1
+click==8.1.8
+typer==0.27.3
