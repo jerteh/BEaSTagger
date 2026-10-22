@@ -6,7 +6,7 @@ from tkinter import Tk, filedialog as fd
 
 def tag(src=None, model="", out_path=".", lexicons_path="", transliterate=True, lexiconmagic=True,
         tokenize=False, MWU=False, stdout=False, quiet=False, onlyPOS=False, lemmat=True, lempos=False,
-        modelnames=[], lemmafor=[], lemmatizers={}, probability=False, confidence=0.93):
+        modelnames=None, lemmafor=None, lemmatizers=None, probability=False, confidence=0.93):
     """
     :param src: string[] > list of files to be tagged (filepaths or urls) - default of NONE results in tkinter input
     :param model: string > path to BEaST model to use for tagging - defaults to ./data/default
@@ -29,6 +29,10 @@ def tag(src=None, model="", out_path=".", lexicons_path="", transliterate=True, 
     :return: this function outputs tagged file onto said location - no returns
     """
 
+    modelnames = list(modelnames) if modelnames is not None else []
+    lemmafor = list(lemmafor) if lemmafor is not None else []
+    lemmatizers = dict(lemmatizers) if lemmatizers is not None else {}
+
     # initiate paths
     if model == "":
         model = path.join(path.dirname(__file__), "data/models/default")
@@ -38,7 +42,7 @@ def tag(src=None, model="", out_path=".", lexicons_path="", transliterate=True, 
 
     # initiate lexicons
     lexicons = [x for x in os.listdir(lexicons_path) if "openclass" not in x]
-    lex_path = lexicons_path + "default"
+    lex_path = path.join(lexicons_path, "default")
 
     if not src:
         Tk().withdraw()
@@ -60,7 +64,7 @@ def tag(src=None, model="", out_path=".", lexicons_path="", transliterate=True, 
             tagset = modelx.split('.')[0].lower()
             for lexicon in lexicons:
                 if "_" + tagset in lexicon.lower():
-                    lemmatizers[modelx] = lexicons_path + lexicon
+                    lemmatizers[modelx] = path.join(lexicons_path, lexicon)
             if modelx not in lemmatizers:
                 lemmatizers[modelx] = lex_path
 
@@ -72,8 +76,8 @@ def tag(src=None, model="", out_path=".", lexicons_path="", transliterate=True, 
             try:
                 tag_complex(model, lex_path, [f], out_path, tt_path, lexiconmagic, transliterate, tokenize, MWU, onlyPOS,
                         lemmat, False, quiet, modelnames, lemmatizers, lempos, probability, stdout, confidence)
-            except:
-                print(f)
+            except Exception as exc:
+                raise RuntimeError(f"Tagging failed for {f}") from exc
 
 
 if __name__ == "__main__":

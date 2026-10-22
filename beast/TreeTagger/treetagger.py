@@ -14,7 +14,7 @@ def tag_treetagger(par_path, file_path, out_path, probability, lemmat, tt_path="
     if isWindows():
         ext = ".exe"
 
-    args.append(tt_path + "tree-tagger" + ext)
+    args.append(os.path.join(tt_path, "tree-tagger" + ext))
     args.append(par_path)
     args.append(file_path)
 
@@ -50,7 +50,7 @@ def train_treetagger(params, lex_path, oc_path, in_path, out_path, tt_path="./Tr
         response = requests.get(oc_path)
         oc_path = response.text
 
-    args.append(tt_path + "train-tree-tagger" + ext)
+    args.append(os.path.join(tt_path, "train-tree-tagger" + ext))
 
     args.append(lex_path)
     args.append(oc_path)

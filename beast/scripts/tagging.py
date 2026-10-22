@@ -7,7 +7,6 @@ import json
 from beast.scripts.conversion import convert as conv
 from beast.TreeTagger.treetagger import tag_treetagger
 from beast.SpacyTagger.spacyworks import tag_spacytagger
-from beast.StanzaTagger.stanzaworks import tag_stanza
 from beast.scripts.torchworks import test_prob_net
 from beast.scripts.pipeline import segmentize, big_chunkus, rem_xml, write_chunks, lexmagic
 from beast.scripts.tokenizer import sr_tokenize
@@ -15,8 +14,12 @@ from beast.scripts.pipeline import probtagToMatrix, get_taggers, lemmas_dic, lex
 
 
 def tag_complex(par_path, lex_path, file_paths, out_path, tt_path, lexiconmagic=False, transliterate=True,
-                tokenization=True, MWU=False, onlyPOS=False, lemmat=False, testing=False, quiet=True, models=[],
-                lemmatizers={}, lempos=False, probability=False, stdout=False, confidence=0.93):
+                tokenization=True, MWU=False, onlyPOS=False, lemmat=False, testing=False, quiet=True, models=None,
+                lemmatizers=None, lempos=False, probability=False, stdout=False, confidence=0.93):
+
+    models = list(models) if models is not None else []
+    lemmatizers = dict(lemmatizers) if lemmatizers is not None else {}
+    os.makedirs(out_path, exist_ok=True)
 
     # default parameters
     tempfiles = ([])
@@ -49,9 +52,13 @@ def tag_complex(par_path, lex_path, file_paths, out_path, tt_path, lexiconmagic=
         # this returns a list of new files to tag and their map to the original files
         files, filesmap = big_chunkus(filex, out_path, quiet)
 
-    for x in filesmap:
-        if os.path.isfile(filesmap[x]):
-            print("Warning! " + filesmap[x] + " already exists. New contents will be appended to the existing file.")
+    # Refuse stale outputs before processing; chunks from this invocation may append.
+    if not testing and not stdout:
+        for original in set(filesmap.values()):
+            name = os.path.basename(original) if os.path.isfile(original) else "input"
+            target = os.path.join(out_path, name + "_" + par_name + ".tt")
+            if os.path.exists(target):
+                raise FileExistsError(target)
 
     # pipeline for each file VVV
     for file in files:
@@ -178,7 +185,7 @@ def tag_complex(par_path, lex_path, file_paths, out_path, tt_path, lexiconmagic=
 
                     tagger_answers["beast"] = newtagsx
 
-                    with open("temp/answers.json", "w", encoding="utf-8") as tat:
+                    with open(os.path.join(out_path, "answers.json"), "w", encoding="utf-8") as tat:
                         json.dump(tagger_answers, tat, ensure_ascii=False)
 
                 newtags[model].extend(newtagsx)
@@ -348,6 +355,7 @@ def tag_any(file, par_path, out_path, tt_path):
             tag_treetagger(par_path, fx, out_path + '/temp3', True, False, tt_path)
 
         elif 'stanza' in par_path:
+            from beast.StanzaTagger.stanzaworks import tag_stanza
             tag_stanza(par_path, fx, out_path + '/temp3')
 
         # if spacy tagger
